@@ -71,8 +71,9 @@ Requirements
 Installation
 
  - Clone the repository:
-    - git clone https://github.com/araj1993/bird-management-system.git
+    - git clone [https://github.com/araj1993/bird-management-system.git](https://github.com/araj1993/bird-management-system.git)
     - cd avian-management-system
+    - checkout feature/avain_management
 
 Setup the database:
 
@@ -83,7 +84,7 @@ How To Run The Application
 
   1. Activate python environment (optional)
   2. pip -r requirements.txt (not needed until any specific requirements are mentioned)
-  3. **python ./avian_management.py**
+  3. **python ./main.py**
 
 ## Example of Command Line Interface Design 
 
