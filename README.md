@@ -55,7 +55,7 @@ CREATE TABLE avian_sighting (
 
 <img width="680" height="347" alt="image" src="https://github.com/user-attachments/assets/913e9a56-4725-4bb2-91a4-ba649a6c6fb2" />
 
-### RUN TO AMS
+### HOW TO RUN AMS
 
 Features of AMS
 
