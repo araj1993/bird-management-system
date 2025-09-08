@@ -1,10 +1,17 @@
 import sqlite3
 import csv
+import os
 from tabulate import tabulate
-from menu import *
 
-connection = sqlite3.connect("bird.db")
-cursor = connection.cursor()
+
+def create_db():
+    """
+    Create a SQLite database and establish a connection.
+    """
+    global connection, cursor
+    connection = sqlite3.connect('avian.db')
+    cursor = connection.cursor()
+    print("Database created successfully.")
 
 
 def create_register_user_table():
@@ -27,6 +34,7 @@ def create_register_user_table():
 
     connection.commit()
     connection.close()
+    print("successfully created 'users' table.")
 
 
 def register_user():
@@ -37,7 +45,7 @@ def register_user():
     3. password
     4. user_type
     """
-    conn = sqlite3.connect('bird.db')
+    conn = sqlite3.connect('avian.db')
     cursor = conn.cursor()
 
     user_name = input("Enter a username: ").strip()
@@ -62,7 +70,7 @@ def login_user():
     """
     Login an existing user with their credentials.
     """
-    conn = sqlite3.connect('bird.db')
+    conn = sqlite3.connect('avian.db')
     cursor = conn.cursor()
 
     username_or_email = input("Enter a username or email: ").strip()
@@ -93,12 +101,14 @@ def login_user():
         return None
 
 
-def create_bird_detail_table():
+def create_avian_detail_table():
     """
-    Create a table for storing bird details.
+    Create a table for storing avian details.
     """
+    connection = sqlite3.connect('avian.db')
+    cursor = connection.cursor()
     try:
-        cursor.execute('''CREATE TABLE IF NOT EXISTS bird_details (
+        cursor.execute('''CREATE TABLE IF NOT EXISTS avian_details (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL UNIQUE,
             bio_name TEXT NOT NULL UNIQUE,
@@ -114,15 +124,15 @@ def create_bird_detail_table():
         connection.close()
 
 
-def add_bird_details():
+def add_avian_details():
     """
-    Add details of a new bird to the database.
+    Add details of a new avian to the database.
     """
     try:
-        conn = sqlite3.connect('bird.db')
+        conn = sqlite3.connect('avian.db')
         cursor = conn.cursor()
 
-        name = input("Enter bird name: ").strip()
+        name = input("Enter avian name: ").strip()
         bio_name = input("Enter biological name: ").strip()
         origin = input("Enter origin: ").strip()
         habitat = input("Enter habitat: ").strip()
@@ -131,12 +141,12 @@ def add_bird_details():
         description = input("Enter description: ").strip()
 
         cursor.execute('''
-        INSERT INTO bird_details (name, bio_name, origin, habitat, diet, conservation_status, description)
+        INSERT INTO avian_details (name, bio_name, origin, habitat, diet, conservation_status, description)
         VALUES (?, ?, ?, ?, ?, ?, ?)
         ''', (name, bio_name, origin, habitat, diet, conservation_status, description))
 
         conn.commit()
-        print(f"Bird '{name}' added successfully.")
+        print(f"avian '{name}' added successfully.")
     except Exception as e:
         print(f"Unexpected error: {e}")
         print("Warning: 'conservation_status' must be 'extinct' or 'not extinct'.")
@@ -144,19 +154,19 @@ def add_bird_details():
         conn.close()
 
 
-def update_bird_by_name():
+def update_avian_by_name():
     """
-    Update details of an existing bird in the database.
+    Update details of an existing avian in the database.
     """
-    conn = sqlite3.connect('bird.db')
+    conn = sqlite3.connect('avian.db')
     cursor = conn.cursor()
 
-    name = input("Enter the name of the bird to edit: ").strip()
-    cursor.execute("SELECT * FROM bird_details WHERE LOWER(name) = LOWER(?)", (name.lower(),))
-    bird = cursor.fetchone()
+    name = input("Enter the name of the avian to edit: ").strip()
+    cursor.execute("SELECT * FROM avian_details WHERE LOWER(name) = LOWER(?)", (name.lower(),))
+    avian = cursor.fetchone()
 
-    if not bird:
-        choice = input(f"Bird '{name}' not found. Do you want to add it as a new bird? (T/F): ").strip().upper()
+    if not avian:
+        choice = input(f"avian '{name}' not found. Do you want to add it as a new avian? (T/F): ").strip().upper()
         if choice == 'T':
             bio_name = input("Enter biological name: ").strip()
             diet = input("Enter diet: ").strip()
@@ -165,7 +175,7 @@ def update_bird_by_name():
             origin = input("Enter origin: ").strip()
             description = input("Enter description: ").strip()
 
-            add_bird_details(
+            add_avian_details(
                 name=name,
                 bio_name=bio_name,
                 diet=diet,
@@ -179,7 +189,7 @@ def update_bird_by_name():
         conn.close()
         return
 
-    print(f"\nEditing details for bird: {bird}")
+    print(f"\nEditing details for avian: {avian}")
     print("Leave blank to keep the current value.\n")
     
     new_bio_name = input("New biological name: ").strip()
@@ -215,43 +225,43 @@ def update_bird_by_name():
         return
 
     try:
-        sql = f"UPDATE bird_details SET {', '.join(updated_fields)} WHERE LOWER(name) = ?"
+        sql = f"UPDATE avian_details SET {', '.join(updated_fields)} WHERE LOWER(name) = ?"
         new_values.append(name.lower())
 
         cursor.execute(sql, new_values)
         conn.commit()
-        print(f"Bird '{name}' details updated successfully.")
+        print(f"avian '{name}' details updated successfully.")
     except Exception as e:
         print(f"ERROR: {e}")
     finally:
         conn.close()
 
 
-def remove_bird_by_name():
+def remove_avian_by_name():
     """
-    Remove a bird from the database by its name.
+    Remove a avian from the database by its name.
     """
-    conn = sqlite3.connect('bird.db')
+    conn = sqlite3.connect('avian.db')
     cursor = conn.cursor()
 
-    name = input("Enter the name of the bird to be removed from table: ").strip()
+    name = input("Enter the name of the avian to be removed from table: ").strip()
 
-    cursor.execute("SELECT * FROM bird_deatils WHERE LOWER(name) = LOWER(?)", (name.lower(),))
-    bird = cursor.fetchone()
+    cursor.execute("SELECT * FROM avian_details WHERE LOWER(name) = LOWER(?)", (name.lower(),))
+    avian = cursor.fetchone()
 
-    if not bird:
-        print(f"Bird '{name}' does not exist in the database.")
+    if not avian:
+        print(f"avian '{name}' does not exist in the database.")
         conn.close()
         return
 
-    print(f"Bird {bird} exist in the database")
+    print(f"avian {avian} exist in the database")
     confirm = input(f"Are you sure you want to delete '{name}'? (T/F): ").strip().upper()
 
     if confirm == 'T':
         try:
-            cursor.execute("DELETE FROM bird_deatils WHERE LOWER(name) = LOWER(?)", (name.lower(),))
+            cursor.execute("DELETE FROM avian_details WHERE LOWER(name) = LOWER(?)", (name.lower(),))
             conn.commit()
-            print(f"Bird '{name}' deleted successfully.")
+            print(f"avian '{name}' deleted successfully.")
         except Exception as e:
             print(f"ERROR occurred while deleting: {e}")
     else:
@@ -260,71 +270,71 @@ def remove_bird_by_name():
     conn.close()  
 
 
-def view_bird_by_name():
+def view_avian_by_name():
     """
-    View details of a specific bird by its name.
+    View details of a specific avian by its name.
     """
-    conn = sqlite3.connect('bird.db')
+    conn = sqlite3.connect('avian.db')
     cursor = conn.cursor()
 
-    name = input("Enter the name of the bird to view from table: ").strip()
+    name = input("Enter the name of the avian to view from table: ").strip()
     
-    cursor.execute("SELECT * FROM bird_deatils WHERE LOWER(name) = LOWER(?)", (name.lower(),))
-    bird = cursor.fetchone()
+    cursor.execute("SELECT * FROM avian_details WHERE LOWER(name) = LOWER(?)", (name.lower(),))
+    avian = cursor.fetchone()
 
-    if not bird:
-        print(f"No bird named '{name}' found in the database.")
+    if not avian:
+        print(f"No avian named '{name}' found in the database.")
     else:
         column_names = [desc[0].capitalize() for desc in cursor.description]
-        table = [bird]
+        table = [avian]
 
-        print(f"\n Details for bird '{name}':")
+        print(f"\n Details for avian '{name}':")
         print(tabulate(table, headers=column_names, tablefmt="fancy_grid"))
 
     conn.close()
    
 
-def view_bird_details_table():
+def view_avian_details_table():
     """
-    View all bird details from the database.
+    View all avian details from the database.
     """
-    conn = sqlite3.connect('bird.db')
+    conn = sqlite3.connect('avian.db')
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM bird_details")
-    birds = cursor.fetchall()
+    cursor.execute("SELECT * FROM avian_details")
+    avians = cursor.fetchall()
 
-    if not birds:
-        print("No bird records found in the database.")
+    if not avians:
+        print("EMPTY TABLE !!. No avian records found in the database.")
     else:
         column_names = [desc[0].capitalize() for desc in cursor.description]
 
-        print("\n All Bird Records:")
-        print(tabulate(birds, headers=column_names, tablefmt="fancy_grid"))
+        print("\n All avian Records:")
+        print(tabulate(avians, headers=column_names, tablefmt="fancy_grid"))
 
     conn.close()
+    
 
-
-def export_bird_data_to_csv():
+def export_avian_data_to_csv():
     """
-    Export bird data to a CSV file.
+    Export avian data to a CSV file.
     """
-    conn = sqlite3.connect('bird.db')
+    conn = sqlite3.connect('avian.db')
     cursor = conn.cursor()
 
-    print("\n Export Bird Data to CSV")
-    print("1. Export a specific bird by name")
-    print("2. Export all birds")
+    print("\n Export avian Data to CSV")
+    print("1. Export a specific avian by name")
+    print("2. Export all avians")
     choice = input("Enter your choice (1 or 2): ").strip()
 
     if choice == "1":
-        name = input("Enter the bird name to export: ").strip()
+        name = input("Enter the avian name to export: ").strip()
 
-        cursor.execute("SELECT * FROM bird_deatils WHERE LOWER(name) = LOWER(?)", (name.lower(),))
-        bird = cursor.fetchone()
+        cursor.execute("SELECT * FROM avian_details WHERE LOWER(name) = LOWER(?)", (name.lower(),))
+        avian = cursor.fetchone()
 
-        if not bird:
-            print(f"Bird '{name}' not found in the database.")
+        if not avian:
+            print(f"avian '{name}' not found in the database.")
         else:
             column_names = [desc[0] for desc in cursor.description]
             filename = f"{name.lower().replace(' ', '_')}_details.csv"
@@ -332,26 +342,26 @@ def export_bird_data_to_csv():
             with open(filename, mode='w', newline='', encoding='utf-8') as file:
                 writer = csv.writer(file)
                 writer.writerow(column_names)
-                writer.writerow(bird)
+                writer.writerow(avian)
 
-            print(f"Bird '{name}' exported to '{filename}'.")
+            print(f"avian '{name}' exported to '{filename}'.")
 
     elif choice == "2":
-        cursor.execute("SELECT * FROM bird_deatils")
-        birds = cursor.fetchall()
+        cursor.execute("SELECT * FROM avian_details")
+        avians = cursor.fetchall()
 
-        if not birds:
-            print("No saved bird records found.")
+        if not avians:
+            print("No saved avian records found.")
         else:
             column_names = [desc[0] for desc in cursor.description]
-            filename = "all_bird_details.csv"
+            filename = "all_avian_details.csv"
 
             with open(filename, mode='w', newline='', encoding='utf-8') as file:
                 writer = csv.writer(file)
                 writer.writerow(column_names)
-                writer.writerows(birds)
+                writer.writerows(avians)
 
-            print(f"All bird records exported to '{filename}'.")
+            print(f"All avian records exported to '{filename}'.")
 
     else:
         print("Invalid choice. Please enter 1 or 2.")
@@ -363,44 +373,44 @@ def create_avian_sightings_table():
     """
     Create the avian_sightings table in the database.
     """
-    conn = sqlite3.connect('bird.db')
+    conn = sqlite3.connect('avian.db')
     cursor = conn.cursor()
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS avian_sightings (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        bird_id INTEGER NOT NULL,
+        avian_id INTEGER NOT NULL,
         date TEXT NOT NULL,
         location TEXT NOT NULL,
         observer TEXT,
         notes TEXT,
-        FOREIGN KEY (bird_id) REFERENCES bird_details(id) ON DELETE CASCADE
+        FOREIGN KEY (avian_id) REFERENCES avian_details(id) ON DELETE CASCADE
     );
     ''')
 
     conn.commit()
     conn.close()
-    print("Table 'avian_sightings' created or already exists.")
+    print("Table 'avian_sightings' created successfully.")
     
 
 def add_avian_sighting():
     """
     Add a new avian sighting to the database.
     """
-    conn = sqlite3.connect('bird.db')
+    conn = sqlite3.connect('avian.db')
     cursor = conn.cursor()
 
-    bird_name = input("Enter bird name: ").strip()
+    avian_name = input("Enter avian name: ").strip()
 
-    cursor.execute("SELECT id FROM bird_details WHERE LOWER(name) = LOWER(?)", (bird_name.lower(),))
+    cursor.execute("SELECT id FROM avian_details WHERE LOWER(name) = LOWER(?)", (avian_name.lower(),))
     result = cursor.fetchone()
 
     if not result:
-        print(f"Bird '{bird_name}' does not exist in the bird_details table. Cannot add sighting.")
+        print(f"avian '{avian_name}' does not exist in the avian_details table. Cannot add sighting.")
         conn.close()
         return
 
-    bird_id = result[0]
+    avian_id = result[0]
 
     date = input("Enter sighting date (YYYY-MM-DD): ").strip()
     location = input("Enter location: ").strip()
@@ -409,12 +419,12 @@ def add_avian_sighting():
 
     try:
         cursor.execute('''
-            INSERT INTO avian_sightings (bird_id, date, location, observer, notes)
+            INSERT INTO avian_sightings (avian_id, date, location, observer, notes)
             VALUES (?, ?, ?, ?, ?)
-        ''', (bird_id, date, location, observer or None, notes or None))
+        ''', (avian_id, date, location, observer or None, notes or None))
 
         conn.commit()
-        print(f"Sighting of '{bird_name}' added successfully.")
+        print(f"Sighting of '{avian_name}' added successfully.")
 
     except Exception as e:
         print(f"Failed to add sighting: {e}")
@@ -423,69 +433,69 @@ def add_avian_sighting():
         conn.close()
 
 
-def view_avian_sightings_by_bird_name():
+def view_avian_sightings_by_avian_name():
     """
-    View avian sightings for a specific bird by its name.
+    View avian sightings for a specific avian by its name.
     """
-    conn = sqlite3.connect('bird.db')
+    conn = sqlite3.connect('avian.db')
     cursor = conn.cursor()
 
-    bird_name = input("Enter the bird name to view its sightings: ").strip()
+    avian_name = input("Enter the avian name to view its sightings: ").strip()
 
     cursor.execute('''
         SELECT a.id, b.name, a.date, a.location, a.observer, a.notes
         FROM avian_sightings a
-        JOIN bird_deatils b ON a.bird_id = b.id
+        JOIN avian_details b ON a.avian_id = b.id
         WHERE LOWER(b.name) = LOWER(?)
         ORDER BY a.date DESC
-    ''', (bird_name.lower(),))
+    ''', (avian_name.lower(),))
 
     sightings = cursor.fetchall()
 
     if not sightings:
-        print(f"No sightings found for bird '{bird_name}'.")
+        print(f"No sightings found for avian '{avian_name}'.")
     else:
-        print(f"\n Avian Sightings for '{bird_name}':")
-        headers = ["Sighting ID", "Bird Name", "Date", "Location", "Observer", "Notes"]
+        print(f"\n Avian Sightings for '{avian_name}':")
+        headers = ["Sighting ID", "avian Name", "Date", "Location", "Observer", "Notes"]
         print(tabulate(sightings, headers=headers, tablefmt="fancy_grid"))
 
     conn.close()
 
 
-def update_avian_sighting_by_bird_name():
+def update_avian_sighting_by_avian_name():
     """
     Update an existing avian sighting in the database.
     """
-    conn = sqlite3.connect('bird.db')
+    conn = sqlite3.connect('avian.db')
     conn.execute("PRAGMA foreign_keys = ON")
     cursor = conn.cursor()
 
-    bird_name = input("Enter the bird name to update a sighting for: ").strip()
+    avian_name = input("Enter the avian name to update a sighting for: ").strip()
 
-    cursor.execute("SELECT id FROM bird_details WHERE LOWER(name) = LOWER(?)", (bird_name.lower(),))
-    bird = cursor.fetchone()
+    cursor.execute("SELECT id FROM avian_details WHERE LOWER(name) = LOWER(?)", (avian_name.lower(),))
+    avian = cursor.fetchone()
 
-    if not bird:
-        print(f"Bird '{bird_name}' not found in the database.")
+    if not avian:
+        print(f"avian '{avian_name}' not found in the database.")
         conn.close()
         return
 
-    bird_id = bird[0]
+    avian_id = avian[0]
 
     cursor.execute("""
         SELECT id, date, location, observer, notes
         FROM avian_sightings
-        WHERE bird_id = ?
+        WHERE avian_id = ?
         ORDER BY date DESC
-    """, (bird_id,))
+    """, (avian_id,))
     sightings = cursor.fetchall()
 
     if not sightings:
-        print(f"No sightings found for bird '{bird_name}'.")
+        print(f"No sightings found for avian '{avian_name}'.")
         conn.close()
         return
 
-    print(f"\n Sightings for '{bird_name}':")
+    print(f"\n Previous sightings for '{avian_name}':")
     headers = ["Sighting ID", "Date", "Location", "Observer", "Notes"]
     print(tabulate(sightings, headers=headers, tablefmt="fancy_grid"))
 
@@ -496,19 +506,15 @@ def update_avian_sighting_by_bird_name():
         conn.close()
         return
 
-    cursor.execute("SELECT date, observer, notes FROM avian_sightings WHERE id = ? AND bird_id = ?", (sighting_id, bird_id))
+    cursor.execute("SELECT date, observer, notes FROM avian_sightings WHERE id = ? AND avian_id = ?", (sighting_id, avian_id))
     result = cursor.fetchone()
 
     if not result:
-        print("Sighting for input bird is not found.")
+        print("Sighting for input avian is not found.")
         conn.close()
         return
 
     current_date, current_observer, current_notes = result
-
-    print(f"\n Current Date: {current_date}")
-    print(f"Current Observer: {current_observer}")
-    print(f"Current Notes:\n{current_notes or '—'}")
 
     new_date = input("Enter a new date to append (YYYY-MM-DD), or press Enter to skip: ").strip()
     new_observer = input("Enter a new observer name to append, or press Enter to skip: ").strip()
@@ -530,44 +536,44 @@ def update_avian_sighting_by_bird_name():
     print("\n Sighting updated successfully.")
 
 
-def view_sightings_for_all_birds():
+def view_sightings_for_all_avians():
     """
     View all avian sightings from the database.
     """
-    conn = sqlite3.connect('bird.db')
+    conn = sqlite3.connect('avian.db')
     cursor = conn.cursor()
 
     cursor.execute("SELECT * FROM avian_sightings")
-    birds = cursor.fetchall()
+    avians = cursor.fetchall()
 
-    if not birds:
-        print("No bird records found in the database.")
+    if not avians:
+        print("No avian records found in the database.")
     else:
         column_names = [desc[0].capitalize() for desc in cursor.description]
 
-        print("\n Records of All Birds:")
-        print(tabulate(birds, headers=column_names, tablefmt="fancy_grid"))
+        print("\n Records of All avians:")
+        print(tabulate(avians, headers=column_names, tablefmt="fancy_grid"))
 
     conn.close()
 
 
-def view_all_birds_existing_in_db():
+def view_all_avians_existing_in_db():
     """
-    View all bird names from the database.
+    View all avian names from the database.
     """
-    conn = sqlite3.connect('bird.db')
+    conn = sqlite3.connect('avian.db')
     cursor = conn.cursor()
 
-    cursor.execute("SELECT name FROM bird_details")
-    bird_names = cursor.fetchall()
+    cursor.execute("SELECT name FROM avian_details")
+    avian_names = cursor.fetchall()
 
-    if not bird_names:
-        print("No bird names found.")
+    if not avian_names:
+        print("No avian names found.")
     else:
-        bird_names_with_slno = [(i+1, name[0]) for i, name in enumerate(bird_names)]
+        avian_names_with_slno = [(i+1, name[0]) for i, name in enumerate(avian_names)]
 
-        print("\n Names of all Birds saved in the Database:")
-        print(tabulate(bird_names_with_slno, headers=["Sl. No.", "Bird Name"], tablefmt="fancy_grid"))
+        print("\n Names of all avians saved in the Database:")
+        print(tabulate(avian_names_with_slno, headers=["Sl. No.", "avian Name"], tablefmt="fancy_grid"))
 
     conn.close()
 
@@ -583,20 +589,42 @@ def main():
     if user_exist == 'f':
         want_to_register = input("Do you want to register? (T/F): ").strip().lower()
         if want_to_register == 't':
-            register_user()
+            if os.path.exists("avian.db"):
+                register_user()
+            else:    
+                db = input("Database file does not exist. Do you want to create a DataBase? (T/F): ").strip().lower()
+                if db == 't':
+                    create_db()
+                    create_register_user_table()
+                    create_avian_detail_table()
+                    create_avian_sightings_table()
+                    print("Database and user table created successfully. Login and register the user.")    
+                    exit()     
         else:
-            print("\n Thank you for visiting!")
+            print("\nExiting.... Thank you for visiting! \n")
             exit()
-    else:
-        user = login_user()  
-        if user:
-            user_type = user[4].lower()
-            if user_type == 'student':
-                student_menu()
-            elif user_type == 'researcher':
-                researcher_menu()
+    elif user_exist == 't':
+        if os.path.exists("avian.db") is False:
+            db = input("Database file does not exist. Do you want to create a DataBase? (T/F): ").strip().lower()
+            if db == 't':
+                create_db()
+                create_register_user_table()
+                create_avian_detail_table()
+                create_avian_sightings_table()
+                print("Database and user table created successfully. Login and register the user.")    
+                exit()
             else:
-                common_user_menu()
+                exit("\nExiting... \n")              
+        else:
+            user = login_user()  
+            if user:
+                user_type = user[4].lower()
+                if user_type == 'student':
+                    student_menu()
+                elif user_type == 'researcher':
+                     researcher_menu()
+                else:
+                    common_user_menu()        
 
 
 def student_menu():
@@ -607,9 +635,9 @@ def student_menu():
     print("\n Please choose an option below:")
     print("1. View all saved avian species")
     print("2. View detailed information for all avians")
-    print("3. View details for a specific bird")
-    print("4. View sightings for a specific bird")
-    print("5. View sightings for all birds")
+    print("3. View details for a specific avian")
+    print("4. View sightings for a specific avian")
+    print("5. View sightings for all avians")
     print("6. Add a new avian sighting")
     print("7. Export avian details to CSV")
     print("0. Exit")
@@ -620,19 +648,19 @@ def student_menu():
         print("Invalid input. Please enter a number between 0 and 7.")
 
     if choice == 1:
-        view_all_birds_existing_in_db()
+        view_all_avians_existing_in_db()
     elif choice == 2:
-        view_bird_details_table()
+        view_avian_details_table()
     elif choice == 3:
-        view_bird_by_name()
+        view_avian_by_name()
     elif choice == 4:
-        view_avian_sightings_by_bird_name()
+        view_avian_sightings_by_avian_name()
     elif choice == 5:
-        view_sightings_for_all_birds()
+        view_sightings_for_all_avians()
     elif choice == 6:
-        update_avian_sighting_by_bird_name()
+        update_avian_sighting_by_avian_name()
     elif choice == 7:
-        export_bird_data_to_csv()
+        export_avian_data_to_csv()
     elif choice == 0:
         print("Exiting the menu.")
         exit()
@@ -647,14 +675,15 @@ def researcher_menu():
     print("\n Please choose an option below:")
     print("1. View all saved avian species")
     print("2. View detailed information for all avians")
-    print("3. View details for a specific bird")
-    print("4. View sightings for a specific bird")
-    print("5. View sightings for all birds")
-    print("6. Add a new avian sighting") 
-    print("7. Update avian detail for a specific bird")   
-    print("8. Update avian sighting for a specific bird")
-    print("9. Remove specific bird information")
-    print("10. Export avian details to CSV")
+    print("3. View details for a specific avian")
+    print("4. View sightings for a specific avian")
+    print("5. View sightings for all avians")
+    print("6. Add new avian details")
+    print("7. Add a new avian sighting")
+    print("8. Update avian detail for a specific avian")
+    print("9. Update avian sighting for a specific avian")
+    print("10. Remove specific avian information")
+    print("11. Export avian details to CSV")
     print("0. Exit")
 
     try:
@@ -663,25 +692,27 @@ def researcher_menu():
         print("Invalid input. Please enter a number between 0 and 10.")
 
     if choice == 1:
-        view_all_birds_existing_in_db()
+        view_all_avians_existing_in_db()
     elif choice == 2:
-        view_bird_details_table()
+        view_avian_details_table()
     elif choice == 3:
-        view_bird_by_name()
+        view_avian_by_name()
     elif choice == 4:
-        view_avian_sightings_by_bird_name()
+        view_avian_sightings_by_avian_name()
     elif choice == 5:
-        view_sightings_for_all_birds()
+        view_sightings_for_all_avians()
     elif choice == 6:
-        add_avian_sighting()
+        add_avian_details()    
     elif choice == 7:
-        update_bird_by_name()
+        add_avian_sighting()
     elif choice == 8:
-        update_avian_sighting_by_bird_name()
+        update_avian_by_name()
     elif choice == 9:
-        remove_bird_by_name()
+        update_avian_sighting_by_avian_name()
     elif choice == 10:
-        export_bird_data_to_csv()
+        remove_avian_by_name()
+    elif choice == 11:
+        export_avian_data_to_csv()
     elif choice == 0:
         print("Exiting the menu.")
         exit()
@@ -696,9 +727,9 @@ def common_user_menu():
     print("\n Please choose an option below:")
     print("1. View all saved avian species")
     print("2. View detailed information for all avians")
-    print("3. View details for a specific bird")
-    print("4. View sightings for a specific bird")
-    print("5. View sightings for all birds")
+    print("3. View details for a specific avian")
+    print("4. View sightings for a specific avian")
+    print("5. View sightings for all avians")
     print("6. Export avian details to CSV")
     print("0. Exit")
 
@@ -708,17 +739,17 @@ def common_user_menu():
         print("Invalid input. Please enter a number between 0 and 7.")
 
     if choice == 1:
-        view_all_birds_existing_in_db()
+        view_all_avians_existing_in_db()
     elif choice == 2:
-        view_bird_details_table()
+        view_avian_details_table()
     elif choice == 3:
-        view_bird_by_name()
+        view_avian_by_name()
     elif choice == 4:
-        view_avian_sightings_by_bird_name()
+        view_avian_sightings_by_avian_name()
     elif choice == 5:
-        view_sightings_for_all_birds()
+        view_sightings_for_all_avians()
     elif choice == 6:
-        export_bird_data_to_csv()    
+        export_avian_data_to_csv()    
     elif choice == 0:
         print("Exiting the menu.")
         exit()
