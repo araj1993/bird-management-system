@@ -55,7 +55,7 @@ CREATE TABLE avian_sighting (
 
 <img width="680" height="347" alt="image" src="https://github.com/user-attachments/assets/913e9a56-4725-4bb2-91a4-ba649a6c6fb2" />
 
-### HOW TO RUN AMS
+### Feature and Set-up
 
 Features of AMS
 
@@ -79,10 +79,11 @@ Setup the database:
  - Create the database (SQLite3)
  - Run the provided scripts to create tables 
 
-Running the Application
+How To Run The Application
 
- - Followed by Installation
- - run the script using the command python ./avian_management.py
+  1. Activate python environment (optional)
+  2. pip -r requirements.txt
+  3. python ./avian_management.py
 
 ## Example of Command Line Interface Design 
 
