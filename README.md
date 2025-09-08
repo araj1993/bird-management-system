@@ -12,3 +12,8 @@ Key features:
  - Input validation and error handling for user actions.
  
 Each function is designed to interact with the database, handle user input, and display results in a tabular format using the tabulate library. The main function orchestrates the workflow, prompting users to register or log in and then presenting the appropriate menu based on their role.
+
+
+**Register/Login Flowchart**
+
+<img width="691" height="836" alt="image" src="https://github.com/user-attachments/assets/57d9bbbf-d6bf-4deb-91f9-bdc4b480e8fb" />
