@@ -577,56 +577,6 @@ def view_all_avians_existing_in_db():
 
     conn.close()
 
-
-def main():
-    """
-    Main function to run the Avian Management System.
-    """
-    print("\n-----WELCOME TO AVIAN MANAGEMENT SYSTEM------\n")
-
-    user_exist = input("Are you a registered user? (T/F): ").strip().lower()
-
-    if user_exist == 'f':
-        want_to_register = input("Do you want to register? (T/F): ").strip().lower()
-        if want_to_register == 't':
-            if os.path.exists("avian.db"):
-                register_user()
-            else:    
-                db = input("Database file does not exist. Do you want to create a DataBase? (T/F): ").strip().lower()
-                if db == 't':
-                    create_db()
-                    create_register_user_table()
-                    create_avian_detail_table()
-                    create_avian_sightings_table()
-                    print("Database and user table created successfully. Login and register the user.")    
-                    exit()     
-        else:
-            print("\nExiting.... Thank you for visiting! \n")
-            exit()
-    elif user_exist == 't':
-        if os.path.exists("avian.db") is False:
-            db = input("Database file does not exist. Do you want to create a DataBase? (T/F): ").strip().lower()
-            if db == 't':
-                create_db()
-                create_register_user_table()
-                create_avian_detail_table()
-                create_avian_sightings_table()
-                print("Database and user table created successfully. Login and register the user.")    
-                exit()
-            else:
-                exit("\nExiting... \n")              
-        else:
-            user = login_user()  
-            if user:
-                user_type = user[4].lower()
-                if user_type == 'student':
-                    student_menu()
-                elif user_type == 'researcher':
-                     researcher_menu()
-                else:
-                    common_user_menu()        
-
-
 def student_menu():
     """
     Student menu for avian management system.
@@ -646,6 +596,7 @@ def student_menu():
         choice = int(input("Enter your choice: "))
     except ValueError:
         print("Invalid input. Please enter a number between 0 and 7.")
+        return
 
     if choice == 1:
         view_all_avians_existing_in_db()
@@ -685,11 +636,11 @@ def researcher_menu():
     print("10. Remove specific avian information")
     print("11. Export avian details to CSV")
     print("0. Exit")
-
     try:
         choice = int(input("Enter your choice: "))
     except ValueError:
         print("Invalid input. Please enter a number between 0 and 10.")
+        return
 
     if choice == 1:
         view_all_avians_existing_in_db()
@@ -718,6 +669,7 @@ def researcher_menu():
         exit()
     else:
         print("Invalid choice. Please select a valid option.")
+        print("Invalid choice. Please select a valid option.")
 
 
 def common_user_menu():
@@ -731,12 +683,11 @@ def common_user_menu():
     print("4. View sightings for a specific avian")
     print("5. View sightings for all avians")
     print("6. Export avian details to CSV")
-    print("0. Exit")
-
     try:
         choice = int(input("Enter your choice: "))
     except ValueError:
         print("Invalid input. Please enter a number between 0 and 7.")
+        return
 
     if choice == 1:
         view_all_avians_existing_in_db()
@@ -755,7 +706,4 @@ def common_user_menu():
         exit()
     else:
         print("Invalid choice. Please select a valid option.")    
-
   
-if __name__ == "__main__":
-    main()
