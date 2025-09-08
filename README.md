@@ -16,4 +16,5 @@ Each function is designed to interact with the database, handle user input, and 
 
 **Register/Login Flowchart**
 
-<img width="691" height="836" alt="image" src="https://github.com/user-attachments/assets/57d9bbbf-d6bf-4deb-91f9-bdc4b480e8fb" />
+<img width="837" height="833" alt="image" src="https://github.com/user-attachments/assets/b1ba20dd-81a6-494d-8b4e-6e8837c8ec86" />
+
