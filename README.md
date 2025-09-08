@@ -82,8 +82,8 @@ Setup the database:
 How To Run The Application
 
   1. Activate python environment (optional)
-  2. pip -r requirements.txt
-  3. python ./avian_management.py
+  2. pip -r requirements.txt (not needed until any specific requirements are mentioned)
+  3. **python ./avian_management.py**
 
 ## Example of Command Line Interface Design 
 
