@@ -1,1 +1,105 @@
-# bird-management-system
+# Avian-Management-System
+
+This project file implements the backend logic for an Avian Management System using SQLite as the database with Python as the coding stream. It provides functions for user registration, login, and management of bird details and sightings. The database schema includes tables for users, bird details (avian_details), and bird sightings (avian_sightings). The project supports three user roles: student, researcher, and common user, each with different menu options.
+
+Key features:
+
+ - Database creation and table setup for users, birds, and sightings.
+ - User registration and login with role-based access.
+ - CRUD operations for bird details and sightings.
+ - Exporting bird data to CSV files.
+ - Menu-driven command line interface for different user roles.
+ - Input validation and error handling for user actions.
+ 
+Each function is designed to interact with the database, handle user input, and display results in a tabular format using the tabulate library. The main function orchestrates the workflow, prompting users to register or log in and then presenting the appropriate menu based on their role.
+
+
+**Register/Login Flowchart**
+
+<img width="837" height="833" alt="image" src="https://github.com/user-attachments/assets/b1ba20dd-81a6-494d-8b4e-6e8837c8ec86" />
+
+
+**SQL Schema**
+
+CREATE TABLE User (
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    email TEXT UNIQUE,
+    password TEXT NOT NULL,
+    user_type TEXT,
+    created_at TIMESTAMP
+);
+
+CREATE TABLE avian_details (
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    bio_name TEXT,
+    origin TEXT,
+    habitat TEXT,
+    diet TEXT,
+    conservation_status TEXT
+);
+
+CREATE TABLE avian_sighting (
+    id INTEGER PRIMARY KEY,
+    avian_id INTEGER,
+    date TEXT,
+    location TEXT,
+    observer TEXT,
+    notes TEXT,
+    FOREIGN KEY (avian_id) REFERENCES avian_details(id)
+);
+
+
+**Entity-Relationship Diagram**
+
++-------------------+       +--------------------+       +----------------------+
+|       User        |       |    avian_details    |       |    avian_sighting    |
++-------------------+       +--------------------+       +----------------------+
+| id (PK)           |       | id (PK)            |       | id (PK)              |
+| name              |       | name               |       | avian_id (FK)        |
+| email (Unique)    |       | bio_name           |       | date                 |
+| password (Not Null)|      | origin             |       | location             |
+| user_type         |       | habitat            |       | observer             |
+| created_at        |       | diet               |       | notes                |
++-------------------+       | conservation_status|       +----------------------+
+                            +--------------------+
+
+Relationships:
+ref : avian_sighting.avian_id  --> avian_details.id
+
+### RUN TO AMS
+
+Features of AMS
+
+ - User registration and management
+ - Add and view avian (bird) details
+ - Record and track bird sightings
+
+Requirements
+
+ - Python 3.x
+ - SQLite3
+ 
+Installation
+
+ - Clone the repository:
+    - git clone https://github.com/araj1993/bird-management-system.git
+    - cd avian-management-system
+
+Setup the database:
+
+ - Create the database (SQLite3)
+ - Run the provided scripts to create tables 
+
+Running the Application
+
+ - Followed by Installation
+ - run the script using the command python ./avian_management.py
+
+## Command Line Interface Design 
+
+### Students
+
+![alt text](image.png)
+![alt text](image-1.png)
