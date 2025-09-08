@@ -53,20 +53,7 @@ CREATE TABLE avian_sighting (
 
 **Entity-Relationship Diagram**
 
-+-------------------+       +--------------------+       +----------------------+
-|       User        |       |    avian_details    |       |    avian_sighting    |
-+-------------------+       +--------------------+       +----------------------+
-| id (PK)           |       | id (PK)            |       | id (PK)              |
-| name              |       | name               |       | avian_id (FK)        |
-| email (Unique)    |       | bio_name           |       | date                 |
-| password (Not Null)|      | origin             |       | location             |
-| user_type         |       | habitat            |       | observer             |
-| created_at        |       | diet               |       | notes                |
-+-------------------+       | conservation_status|       +----------------------+
-                            +--------------------+
-
-Relationships:
-ref : avian_sighting.avian_id  --> avian_details.id
+<img width="680" height="347" alt="image" src="https://github.com/user-attachments/assets/913e9a56-4725-4bb2-91a4-ba649a6c6fb2" />
 
 ### RUN TO AMS
 
@@ -97,9 +84,18 @@ Running the Application
  - Followed by Installation
  - run the script using the command python ./avian_management.py
 
-## Command Line Interface Design 
+## Example of Command Line Interface Design 
 
-### Students
+**Students***
+<img width="1251" height="680" alt="image" src="https://github.com/user-attachments/assets/66a89c6f-cbfe-4048-bb31-425413460059" />
+<img width="1053" height="391" alt="image" src="https://github.com/user-attachments/assets/d43bf920-9d82-484a-abbc-1eed57a4595e" />
 
-![alt text](image.png)
-![alt text](image-1.png)
+
+**Researchers**
+<img width="1166" height="649" alt="image" src="https://github.com/user-attachments/assets/d5e0e80e-c464-47fd-a0a0-12b625fb76fe" />
+<img width="1173" height="540" alt="image" src="https://github.com/user-attachments/assets/4bebe1eb-8cd5-4c22-9ffe-25ff03def94d" />
+
+**Common Users**
+<img width="975" height="780" alt="image" src="https://github.com/user-attachments/assets/8a620b1f-c039-45c1-becf-7c111027d42a" />
+
+
