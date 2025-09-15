@@ -100,4 +100,3 @@ How To Run The Application
 **Common Users**
 <img width="975" height="780" alt="image" src="https://github.com/user-attachments/assets/8a620b1f-c039-45c1-becf-7c111027d42a" />
 
-
